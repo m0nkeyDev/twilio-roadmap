@@ -6,7 +6,7 @@ Este documento detalla la hoja de ruta para la implementación de un sistema de 
 
 ## 1. Configuración de Cuenta y Proveedores
 
-Para operar legalmente en Venezuela y minimizar fricciones técnicas, seguiremos el flujo oficial a través de **Proveedores de Soluciones de Negocios (BSPs)** como Twilio.
+Para operar legalmente en Venezuela y minimizar fricciones técnicas, seguiremos el flujo oficial a través de **Proveedores de Soluciones de Negocios** como Twilio.
 
 ### ¿Por qué usar un Proveedor Verificado (Twilio)?
 * **Evita validaciones complejas:** Al usar Twilio, te saltas gran parte de la burocracia directa con Meta/Facebook. El proveedor ya está verificado ante Meta, lo que acelera la aprobación de tu cuenta de WhatsApp Business.
@@ -16,12 +16,12 @@ Para operar legalmente en Venezuela y minimizar fricciones técnicas, seguiremos
 1.  **Registro:** Crear cuenta en [Twilio.com](https://www.twilio.com).
 2.  **Verificación de Identidad:** Twilio solicitará verificar tu identidad.
 3.  **Habilitar el Sandbox:** Antes de comprar un número, se debe usar el *Twilio Sandbox for WhatsApp* para pruebas técnicas.
-4.  **Compra de Número (Sender):** Se debe adquirir un número con capacidad SMS/Voz. 
+4.  **Compra de Número (Sender):** Se debe adquirir un número con capacidad SMS. 
 
 > [!CAUTION]
-> ### ⚠️ Advertencia Crítica de la Cuenta (Cloud API)
-> Una vez que un número de teléfono se registra y habilita para el **Cloud API de WhatsApp** (a través de Twilio o directamente con Meta), **dicho número queda desactivado en la aplicación móvil de WhatsApp Business**. 
-> * No podrás usar el teléfono para chatear manualmente desde la app. 
+> ### ⚠️ Advertencia Crítica de la Cuenta (WhatsApp Cloud API)
+> Una vez que un número de teléfono se registra y habilita para el **Cloud API de WhatsApp** (Directamente con Meta), **dicho número queda desactivado en la aplicación móvil de WhatsApp Business**. 
+> * No podrás usar el teléfono para chatear manualmente desde la app mobile. 
 > * Toda la comunicación deberá gestionarse exclusivamente a través de la **API** o de un **Dashboard** que consuma dicha API.
 
 ---
@@ -33,7 +33,7 @@ WhatsApp prohíbe el envío de mensajes "libres" para iniciar conversaciones. Es
 ### ¿Qué es una Plantilla?
 Es un formato de mensaje pre-aprobado por Meta.
 * **Ejemplo de Estructura:** `"Hola {{1}}, la Junta Comunal informa que la próxima asamblea será el día {{2}}. Puedes ver el orden del día aquí: {{3}}"`
-* **Validación:** Una vez creada en el panel de Twilio, Meta tarda entre **2 minutos y 24 horas** en aprobarla.
+* **Validación:** Una vez creada en el panel de Twilio, Meta tarda entre **24H/48H** en aprobarla.
 
 ### Reglas para Enlaces (Links):
 * Los enlaces deben ser **HTTPS**.
@@ -44,7 +44,7 @@ Es un formato de mensaje pre-aprobado por Meta.
 
 ## 3. Arquitectura de la API
 
-El backend (Django REST Framework) será el cerebro que gestione quién recibe qué mensaje y cuándo.
+El backend será el cerebro que gestione quién recibe qué mensaje y cuándo.
 
 ### Endpoint Principal:
 `POST /api/v1/notifications/send/`
@@ -66,6 +66,5 @@ Para evitar que la cuenta sea marcada como **SPAM**, aplicaremos las siguientes 
 
 | Riesgo | Solución / Prevención |
 | :--- | :--- |
-| **Mensajes Masivos Irrelevantes** | No enviar más de 2 notificaciones por semana a la misma persona para no saturar. |
-| **Uso de Enlaces Sospechosos** | Asegurar que el dominio del enlace coincida con el nombre de la organización. |
+| **Mensajes Masivos Irrelevantes** | En medida de lo posible se debe tratar de no enviar más de 2 notificaciones por semana a la misma persona para no saturar. |
 | **Falta de Interacción** | Si los usuarios nunca responden, WhatsApp baja la "calificación de calidad". Fomenta que respondan con un "Recibido". |
